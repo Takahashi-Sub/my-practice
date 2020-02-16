@@ -1,0 +1,53 @@
+.body
+  .body__speech
+    %p#title 音声入力のテストができます
+
+    %i.fa.fa-microphone#icon-start
+    %input{onclick: "recognition.start();", type: "button", value: "START", id: "start-btn"}
+    %i.fa.fa-microphone-slash#icon-stop
+    %input{onclick: "recognition.stop();", type: "button", value: "STOP", id: "stop-btn"}
+
+    %p#state 停止中
+      
+    = form_with model: @test, class: :form, local: true do |form|
+      =form.text_area :text, cols: "50", rows: "5", placeholder: "こちらにテキストが入力されます", id: "result-text"
+      %br
+      = form.submit "Done!", id: "create-btn"
+
+    .body__speech__all-text
+      - index = 1
+      - @tests.each do |test|
+        = index
+        = ":"
+        = test.text
+        %br
+        - index += 1
+        - if index == @tests.length
+          %br
+          %p#attention new sentence!
+
+  .body__image
+    %p#title 画像を保存することができます
+
+    #upload-area 
+      Drop a file here！
+
+    -# = form_with model: @test, enctype: "multipart/form-data", local: true do |form|
+    -#   = form.file_field :image, id: "upload-form-fileselect", name: "files[]", muliple: "multiple"
+    = form_with model: @test, local: true do |form|
+      = form.file_field :image, id: "upload-form-fileselect"
+      %br/
+      = form.submit "アップロード"
+
+    .body__speech__all-text
+      - index = 1
+      - @tests.each do |test|
+        = index
+        = ":"
+        - if test.image.url.present?  
+          = image_tag test.image.url, class: "image-item"
+        %br
+        - index += 1
+        - if index == @tests.length
+          %br
+          %p#attention new pic!
